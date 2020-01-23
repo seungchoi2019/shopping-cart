@@ -3,6 +3,7 @@ import 'rbx/index.css';
 import ProductList from "./Components/Product/ProductList";
 import { Container, Button } from 'rbx';
 import Cart from './Components/Cart/Cart';
+import Sidebar from 'react-sidebar';
 import firebase from 'firebase/app';
 import 'firebase/database';
 
@@ -41,12 +42,10 @@ const useCartProducts = () => {
   return [cartProducts, addCartProduct, deleteCartProduct];
 }
 
-  return 
-
 const App = () => {
   const [data, setData] = useState({});
   const products = Object.values(data);
-  const [cartOpen, setCartOpen] = useState (fase);
+  const [cartOpen, setCartOpen] = useState (false);
   const [cartProducts, addCartProduct, deleteCartProduct] = useCartProducts();
 
   useEffect(() => {
