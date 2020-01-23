@@ -2,7 +2,7 @@ import React from 'react';
 import "rbx/index.css";
 import { Box, Media, Image, Content, Level, Delete, Icon } from 'rbx';
 
-const CartItem = ({ product }) => {
+const CartItem = ({ product, deleteCartProduct }) => {
     const img = 'data/products/${product.sku}_2.jpg';
     return (
         <Box>
@@ -27,9 +27,9 @@ const CartItem = ({ product }) => {
                         </p>
                     </Content>
                 </Media.Item>
-                {/* <Media.Item align = "right">
+                <Media.Item align = "right">
                     <Delete onClick={() => deleteCartProduct(product)} />
-                </Media.Item> */}
+                </Media.Item>
             </Media>
         </Box>
     );

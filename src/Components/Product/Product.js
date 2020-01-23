@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import 'rbx/index.css';
 import { Button, Card, Image, Title } from 'rbx';
+import SizeButton from '../SizeButton/SizeButton';
 
     // <Card>
     //     <Card.Image>
@@ -20,6 +21,7 @@ import { Button, Card, Image, Title } from 'rbx';
     //         <Button style={{marginLeft: 50}}>Add to Cart</Button>
     //     </Card.Content>
     // </Card>
+
 const Product = ({ product, addCartProduct }) => {
         const img = 'data/products/${product.sku}_2.jpg';
         const [size, setSize] = useState("");
@@ -35,11 +37,11 @@ const Product = ({ product, addCartProduct }) => {
                     <Title> {product.title} </Title>
                     <Title size = {4}> {product.description}</Title>
                     <Title size = {4}> {product.currencyFormat} {product.price}</Title>
-                    <Button>XS</Button>
-                    <Button>S</Button>
-                    <Button>M</Button>
-                    <Button>L</Button>
-                    <Button>XL</Button>
+                    <SizeButton setSize = {setSize} choseSize = {size} size = "XS"/>
+                    <SizeButton setSize = {setSize} choseSize = {size} size = "S"/>
+                    <SizeButton setSize = {setSize} choseSize = {size} size = "M"/>
+                    <SizeButton setSize = {setSize} choseSize = {size} size = "L"/>
+                    <SizeButton setSize = {setSize} choseSize = {size} size = "XL"/>
                     <Button onClick={() => size ? addCartProduct (product, size): alert("Size not selected")}>
                         Add to Cart
                     </Button>

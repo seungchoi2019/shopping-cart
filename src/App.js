@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import 'rbx/index.css';
 import ProductList from "./Components/Product/ProductList";
-import { Container } from 'rbx';
-import Cart from './components/Cart/Cart';
+import { Container, Button } from 'rbx';
+import Cart from './Components/Cart/Cart';
 import firebase from 'firebase/app';
 import 'firebase/database';
 
@@ -35,12 +35,19 @@ const useCartProducts = () => {
         [{ ...p, size, quantity: 1 }].concat(cartProducts)
     );
   }
+  const deleteCartProduct = (p) => {
+    setCartProducts(cartProducts.filter(product => product.sku !== p.sku))
+  }
+  return [cartProducts, addCartProduct, deleteCartProduct];
+}
+
+  return 
 
 const App = () => {
   const [data, setData] = useState({});
   const products = Object.values(data);
   const [cartOpen, setCartOpen] = useState (fase);
-  const [cartProducts, addCartProduct] = useCartProducts();
+  const [cartProducts, addCartProduct, deleteCartProduct] = useCartProducts();
 
   useEffect(() => {
     const fetchProducts = async () => {
