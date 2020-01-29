@@ -40,7 +40,7 @@ const getInven = (productInventory, cart, product) => (
 );
 
 
-const Product = ({ product, productInventory, cart, setCartOpen, addCartItem }) => {
+const Product = ({ product, productInventory, cart, setCartOpen, addCartItem, user }) => {
         const [chosenSize, setChosenSize] = useState("");
 
         const renderOutOfStock = () => {
@@ -65,8 +65,8 @@ const Product = ({ product, productInventory, cart, setCartOpen, addCartItem }) 
             return null;
         };
 
-        const addToCart = (product, size) => {
-            addCartItem(product, size);
+        const addToCart = (product, size, user) => {
+            addCartItem(product, size, user);
             setChosenSize("");
             setCartOpen(true);
         }
@@ -88,7 +88,7 @@ const Product = ({ product, productInventory, cart, setCartOpen, addCartItem }) 
                     {renderSizeButton("XL")}
                     {renderOutOfStock()}
                     <br />
-                    <Button onClick={() => chosenSize ? addToCart (product, chosenSize) : alert ("Please choose a size")}>
+                    <Button onClick={() => chosenSize ? addToCart (product, chosenSize, user) : alert ("Please choose a size")}>
                         Add to Cart
                     </Button>
                 </Card.Content>

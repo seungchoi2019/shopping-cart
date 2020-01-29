@@ -2,7 +2,7 @@ import React from 'react';
 import "rbx/index.css";
 import { Box, Media, Image, Content, Delete } from 'rbx';
 
-const CartItem = ({ product, quantity, size, deleteCartItem }) => {
+const CartItem = ({ product, quantity, size, deleteCartItem, user }) => {
     const { title, description, price} = product
     return (
         <Box>
@@ -28,7 +28,7 @@ const CartItem = ({ product, quantity, size, deleteCartItem }) => {
                     </Content>
                 </Media.Item>
                 <Media.Item align = "right">
-                    <Delete onClick={() => deleteCartItem(product.sku + size)} />
+                    <Delete onClick={() => deleteCartItem(product.sku + size, user)} />
                 </Media.Item>
             </Media>
         </Box>
