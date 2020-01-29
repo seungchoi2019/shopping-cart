@@ -9,10 +9,10 @@ import 'firebase/database';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAfMamQWDLN4-wYMDoBILFDQTRJBaBDOKQ",
-  authDomain: "...",
+  authDomain: "https://shopping-cart-a5447.firebaseapp.com",
   databaseURL: "https://shopping-cart-a5447.firebaseio.com",
   projectId: "shopping-cart-a5447",
-  storageBucket: "....",
+  storageBucket: "shopping-cart-a5447.appspot.com",
   messagingSenderId: "...",
   appId: "..."
 
@@ -21,63 +21,107 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database().ref();
 
-const useCartProducts = () => {
-  const [cartProducts, setCartProducts] = useState([]);
-  const addCartProduct = (p, size) => {
-    setCartProducts(
-      cartProducts.find(product => product.sku === p.sku) ?
-        cartProducts.map(product =>
-          product.sku === p.sku ?
-            { ...product, quantity: product.quantity + 1 }
-            :
-            product
-        )
-        :
-        [{ ...p, size, quantity: 1 }].concat(cartProducts)
-    );
+const useCartItems = () => {
+  const [cartItems, setCartItems] = useState({});
+  const addCartItem = (product, size) => {
+    const id = product.sku + size;
+    if (cartItems[id]) {
+      const oldCartItem = cartItems[id];
+      const updatedCartItem = {...oldCartItem, quantity: oldCartItem.quantity + 1};
+      setCartItems({...cartItems, [id]: updatedCartItem});
+    }
+    else {
+      const newCartItem = { product, size, quantity: 1};
+      setCartItems({... cartItems, [id]: newCartItem});
+    }
+    // setCartProducts(
+    //   cartProducts.find(product => product.sku === p.sku) ?
+    //     cartProducts.map(product =>
+    //       product.sku === p.sku ?
+    //         { ...product, quantity: product.quantity + 1 }
+    //         :
+    //         product
+    //     )
+    //     :
+    //     [{ ...p, size, quantity: 1 }].concat(cartProducts)
+    // );
   }
-  const deleteCartProduct = (p) => {
-    setCartProducts(cartProducts.filter(product => product.sku !== p.sku))
+
+  const deleteCartItem = (cartItemId) => {
+    setCartItems (
+      Object
+        .keys(cartItems)
+        .filter(id => id !== cartItemId)
+        .reduce ((obj, id) =>(
+          {
+            ...obj,
+            [id]: cartItems[id]
+          }
+        ), {}));
   }
-  return [cartProducts, addCartProduct, deleteCartProduct];
+  return [cartItems, addCartItem, deleteCartItem];
 }
 
 const App = () => {
   const [data, setData] = useState({});
   const products = Object.values(data);
   const [cartOpen, setCartOpen] = useState (false);
-  const [cartProducts, addCartProduct, deleteCartProduct] = useCartProducts();
+  const [cartItems, addCartItem, deleteCartItem] = useCartItems();
+  const [inventory, setInventory] = useState({});
+  const [productsLoaded, setProductsLoaded] = useState(false);
+  const [inventoryLoaded, setInventoryLoaded] = useState(false);
 
   useEffect(() => {
     const fetchProducts = async () => {
       const response = await fetch('./data/products.json');
       const json = await response.json();
       setData(json);
+      setProductsLoaded(true);
     };
     fetchProducts();
+  }, []);
+
+  useEffect(() => {
+    const handleData = snap => {
+      if (snap.val()) {
+        setInventory(snap.val())
+        setInventoryLoaded(true);
+      };
+    }
+    db.on('value', handleData, error => alert (error));
+    return () => { db.off ('value', handleData);};
   }, []);
 
   return (
     // <Container>
     //   <ProductList products = {products} />
     // </Container>
+    productsLoaded && inventoryLoaded ?
     <Sidebar
-    sidebar={<Cart
-      cartProducts={cartProducts}
-      deleteCartProduct={deleteCartProduct} />}
-    open={cartOpen}
-    onSetOpen={setCartOpen}
-    pullRight
-  >
-    <Container>
-      <Button onClick={() => setCartOpen(true)}>
-        Open cart
-      </Button>
-      <ProductList
-        products={products}
-        addCartProduct={addCartProduct} />
-    </Container>
-  </Sidebar>
+      sidebar = {
+        <Cart
+          cartItems = {cartItems}
+          deleteCartItem = {deleteCartItem} 
+        />}
+        open = {cartOpen}
+        onSetOpen = {setCartOpen}
+        pullRight>
+      <Container>
+        <Button onClick = {() => setCartOpen (true)}>
+          Open Cart
+        </Button>
+          <ProductList
+            products = {products}
+            inventory = {inventory}
+            cart = {cartItems}
+            addCartItem = {addCartItem}
+            setCartOpen = {setCartOpen} 
+          />
+      </Container>
+
+    </Sidebar>
+    :
+    <h1> Loading </h1>
   );
 };
 

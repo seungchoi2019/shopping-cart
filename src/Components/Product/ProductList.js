@@ -3,14 +3,16 @@ import "rbx/index.css";
 import { Column } from 'rbx';
 import Product from "./Product";
 
-const ProductList = ({ products, addCartProduct }) => (
+const ProductList = ({ products, inventory, cart, setCartOpen, addCartItem }) => (
     <Column.Group centered vcentered multiline>
         {products.map(product=>
             <Column key = {product.sku} size="one-quarter">
                 <Product
                     product = {product}
-                    addCartProduct = {addCartProduct} />
-                {/* <Product key = {product.sku} product = {product} /> */}
+                    addCartItem = {addCartItem}
+                    productInventory = {inventory[product.sku]}
+                    cart = {cart}
+                    setCartOpen = {setCartOpen} />
             </Column>
         )}
     </Column.Group>

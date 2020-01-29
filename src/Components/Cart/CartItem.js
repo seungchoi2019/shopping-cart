@@ -1,34 +1,34 @@
 import React from 'react';
 import "rbx/index.css";
-import { Box, Media, Image, Content, Level, Delete, Icon } from 'rbx';
+import { Box, Media, Image, Content, Delete } from 'rbx';
 
-const CartItem = ({ product, deleteCartProduct }) => {
-    const img = 'data/products/${product.sku}_2.jpg';
+const CartItem = ({ product, quantity, size, deleteCartItem }) => {
+    const { title, description, price} = product
     return (
         <Box>
             <Media>
                 <Media.Item as = "figure" align = "left">
                     <Image.Container as = "p" size = {64}>
-                        <Image alt = "64x64" src = {img}/>
+                        <Image alt = "64x64" src = {`data/products/${product.sku}_1.jpg`}/>
                     </Image.Container>
                 </Media.Item>
                 <Media.Item align = "content">
                     <Content>
                         <p>
-                            <strong> { product.title }</strong>
+                            <strong> { title }</strong>
                             <br />
-                            {product.description}
+                            {description}
                             <br />
-                            Quantity: {product.quantity}
+                            Quantity: {quantity}
                             <br />
-                            Size: {product.size}
+                            Size: {size}
                             <br />
-                            Price: {product.price}
+                            Price: {price}
                         </p>
                     </Content>
                 </Media.Item>
                 <Media.Item align = "right">
-                    <Delete onClick={() => deleteCartProduct(product)} />
+                    <Delete onClick={() => deleteCartItem(product.sku + size)} />
                 </Media.Item>
             </Media>
         </Box>
