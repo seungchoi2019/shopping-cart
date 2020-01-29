@@ -4,8 +4,10 @@ import ProductList from "./Components/Product/ProductList";
 import { Container, Button } from 'rbx';
 import Cart from './Components/Cart/Cart';
 import Sidebar from 'react-sidebar';
+import Navbar from './Components/Navbar/Navbar';
 import firebase from 'firebase/app';
 import 'firebase/database';
+import 'firebase/auth';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAfMamQWDLN4-wYMDoBILFDQTRJBaBDOKQ",
@@ -67,6 +69,7 @@ const App = () => {
   const products = Object.values(data);
   const [cartOpen, setCartOpen] = useState (false);
   const [cartItems, addCartItem, deleteCartItem] = useCartItems();
+  const [user, setUser] = useState(null);
   const [inventory, setInventory] = useState({});
   const [productsLoaded, setProductsLoaded] = useState(false);
   const [inventoryLoaded, setInventoryLoaded] = useState(false);
@@ -92,6 +95,10 @@ const App = () => {
     return () => { db.off ('value', handleData);};
   }, []);
 
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged(setUser);
+  }, []);
+
   return (
     // <Container>
     //   <ProductList products = {products} />
@@ -106,19 +113,14 @@ const App = () => {
         open = {cartOpen}
         onSetOpen = {setCartOpen}
         pullRight>
-      <Container>
-        <Button onClick = {() => setCartOpen (true)}>
-          Open Cart
-        </Button>
-          <ProductList
-            products = {products}
-            inventory = {inventory}
-            cart = {cartItems}
-            addCartItem = {addCartItem}
-            setCartOpen = {setCartOpen} 
-          />
-      </Container>
-
+      <Navbar user = {user} cartOpen = {cartOpen} setCartOpen={setCartOpen} />
+      <ProductList
+        products = {products}
+        inventory = {inventory}
+        cart = {cartItems}
+        addCartItem = {addCartItem}
+        setCartOpen = {setCartOpen}
+      />
     </Sidebar>
     :
     <h1> Loading </h1>
